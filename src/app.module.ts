@@ -6,8 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PhotoModule } from './photo/photo.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from './config/configuration';
-import { DatabaseModule } from './database/database.module';
-import { TypeormConfig } from './config/typeorm.config';
+import { TypeormConfigService } from './config/typeorm.service';
 
 @Module({
   imports: [
@@ -15,16 +14,15 @@ import { TypeormConfig } from './config/typeorm.config';
       cache: true,
       isGlobal: true,
       load: [configuration],
+      envFilePath: [`.env.${process.env.NODE_ENV}`, `.env`],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: TypeormConfig,
+      useFactory: TypeormConfigService,
     }),
-    DatabaseModule,
     UsersModule,
     PhotoModule,
-    IlweModule,
   ],
   controllers: [AppController],
   providers: [AppService],
