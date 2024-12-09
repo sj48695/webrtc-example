@@ -1,0 +1,16 @@
+services:
+  nestjs:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./server:/app
+    command: npm run start:dev
+  client:
+    image: nginx:latest
+    volumes:
+      - ./client:/usr/share/nginx/html:ro
+    ports:
+      - "8080:80"
