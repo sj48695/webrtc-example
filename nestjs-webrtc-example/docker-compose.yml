@@ -1,5 +1,6 @@
 services:
   nestjs:
+    restart: always
     build:
       context: ./server
       dockerfile: Dockerfile
