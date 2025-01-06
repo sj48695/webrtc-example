@@ -4,6 +4,7 @@ import {
   Producer,
   Router,
   WebRtcTransport,
+  PlainTransport,
   Worker,
 } from 'mediasoup/node/lib/types';
 
@@ -29,7 +30,7 @@ export interface IRouter {
 }
 
 export interface ITransport {
-  transport: WebRtcTransport;
+  transport: WebRtcTransport | PlainTransport;
 }
 
 export interface IProducer {
