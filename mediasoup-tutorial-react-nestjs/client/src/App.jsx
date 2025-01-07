@@ -3,14 +3,13 @@ import io from 'socket.io-client';
 import * as mediasoupClient from 'mediasoup-client';
 
 // const SERVER_URL = "http://192.168.35.25:5001";
-const SERVER_URL = 'https://4ecf-219-255-0-122.ngrok-free.app';
+const SERVER_URL = 'https://13ca-14-52-64-29.ngrok-free.app';
 
 function App() {
   const [socket, setSocket] = useState(null);
   const [device, setDevice] = useState(null);
   const [sendTransport, setSendTransport] = useState(null);
   const [recvTransport, setRecvTransport] = useState(null);
-  const [plainTransportId, setPlainTransportId] = useState(null);
   const [joined, setJoined] = useState(false);
   const [roomId, setRoomId] = useState('');
   const [peers, setPeers] = useState([]);
@@ -30,8 +29,8 @@ function App() {
       console.log('Connected to server:', newSocket.id);
     });
 
-    newSocket.on('start-recording', () => {
-      setIsRecording(true);
+    newSocket.on('new-room', () => {
+      startRecording();
     });
 
     newSocket.on('new-peer', ({ peerId }) => {
@@ -181,9 +180,6 @@ function App() {
           }
 
           setJoined(true);
-
-          // 🎯 방에 참여한 후 녹음 시작 요청
-          startRecording();
         }
       );
     }
@@ -288,7 +284,7 @@ function App() {
   const startRecording = () => {
     socket.emit(
       'start-recording',
-      { roomId, peerId: socket.id, plainTransportId },
+      { roomId, peerId: socket.id },
       (response) => {
         if (response.message) {
           console.log(response.message);
@@ -301,7 +297,7 @@ function App() {
   const stopRecording = () => {
     socket.emit(
       'stop-recording',
-      { roomId, peerId: socket.id, plainTransportId },
+      { roomId },
       (response) => {
         if (response.message) {
           console.log(response.message);

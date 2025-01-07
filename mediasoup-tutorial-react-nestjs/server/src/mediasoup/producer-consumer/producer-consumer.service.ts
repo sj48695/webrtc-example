@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { Consumer } from 'mediasoup/node/lib/types';
 import { RoomService } from '../room/room.service';
 import { IConsumeParams, IProduceParams } from './producer-consumer.interface';
-import { Consumer } from 'mediasoup/node/lib/types';
-import { inspect } from 'util';
 
 @Injectable()
 export class ProducerConsumerService {
@@ -31,14 +30,17 @@ export class ProducerConsumerService {
 
     peer.producers.set(producer.id, { producer });
 
-    const consumer = await room.plainTransport?.consume({
-      producerId: producer.id,
-      rtpCapabilities: room.router.router.rtpCapabilities,
-    });
+    console.log('[createProducer] producer.id', producer.id);
 
-    console.log('consumer.rtpParameters', consumer.rtpParameters)
+    // const consumer = await room.plainTransport?.consume({
+    //   producerId: producer.id,
+    //   rtpCapabilities: room.router.router.rtpCapabilities,
+    // });
+    // // console.log('consumer', consumer);
+    // // peer.consumers.set(consumer.id, { consumer });
+    // room.consumers.set(consumer.id, consumer);
 
-    peer.consumers.set(consumer.id, { consumer });
+    // console.log('consumer.rtpParameters', consumer.rtpParameters);
     console.log(
       '[createProducer] room.peers',
       // inspect(room.peers, { depth: 4 }),
@@ -76,7 +78,6 @@ export class ProducerConsumerService {
     peer.consumers.set(consumer.id, { consumer });
 
     console.log('consumer.producerId', consumer.producerId);
-
     console.log(
       '[createConsumer] room.peers',
       // inspect(room.peers, { depth: 4 }),

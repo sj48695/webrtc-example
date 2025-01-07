@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PlainTransport, WebRtcTransport } from 'mediasoup/node/lib/types';
-import { webRtcTransport_options } from '../media.config';
 import { RoomService } from '../room/room.service';
 import { ITransportOptions } from './transport.interface';
+import { PlainTransport, WebRtcTransport } from 'mediasoup/node/lib/types';
+import { webRtcTransport_options } from '../media.config';
 
 @Injectable()
 export class TransportService {
@@ -38,5 +38,36 @@ export class TransportService {
       iceCandidates: transport.iceCandidates,
       dtlsParameters: transport.dtlsParameters,
     };
+  }
+
+  async createPlainTransport(roomId: string) {
+    const room = this.roomService.getRoom(roomId);
+    // console.log('[createPlainTransport1] room.peers', room?.peers);
+
+    const router = room.router?.router;
+    const plainTransport: PlainTransport = await router?.createPlainTransport({
+      listenIp: { ip: '127.0.0.1', announcedIp: null },
+      // No RTP will be received from the remote side
+      comedia: false,
+      // FFmpeg and GStreamer don't support RTP/RTCP multiplexing ("a=rtcp-mux" in SDP)
+      rtcpMux: false,
+    });
+
+    room.plainTransport = plainTransport;
+
+    // console.log('[createPlainTransport2] room.peers', room?.peers);
+
+    plainTransport.on('trace', (trace) => {
+      console.log('RTP trace:', trace);
+    });
+    // console.log('plainTransport.tuple', plainTransport.tuple);
+    // console.log('plainTransport.rtcpTuple', plainTransport.rtcpTuple);
+    console.log(
+      `PlainTransport created:
+          tuple.localPort      = ${plainTransport.tuple.localPort},
+          rtcpTuple.localPort  = ${plainTransport.rtcpTuple?.localPort},
+          tuple.remotePort     = ${plainTransport.tuple.remotePort},
+          rtcpTuple.remotePort = ${plainTransport.rtcpTuple?.remotePort}`,
+    );
   }
 }
