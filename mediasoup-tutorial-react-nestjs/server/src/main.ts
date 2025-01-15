@@ -11,6 +11,8 @@ import * as passport from 'passport';
 import * as cookieParser from 'cookie-parser';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as expressBasicAuth from 'express-basic-auth';
+import * as fs from 'fs';
+import * as path from 'path';
 
 class Application {
   private logger = new Logger(Application.name);
@@ -101,8 +103,13 @@ class Application {
 }
 
 async function init(): Promise<void> {
+  const httpsOptions = {
+    key: fs.readFileSync(path.resolve(__dirname, '../.cert/cert.key')),
+    cert: fs.readFileSync(path.resolve(__dirname, '../.cert/cert.crt')),
+  };
   const server = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: winstonLogger,
+    httpsOptions
   });
   const app = new Application(server);
   await app.bootstrap();

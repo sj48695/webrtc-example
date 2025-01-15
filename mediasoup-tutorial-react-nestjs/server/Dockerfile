@@ -1,5 +1,5 @@
 # Server 빌드 단계
-FROM base AS server
+FROM mediasoup-base:node-20-ubuntu-22 AS server
 WORKDIR /app/server
 COPY . .
 RUN npm install

@@ -1,22 +1,26 @@
-# Dockerfile
-# 공통 베이스 이미지
-FROM node:20-slim AS base
+FROM ubuntu:22.04 AS base
 
 WORKDIR /app
 
+# COPY . .
+
 # 공통 요구사항 설치
 RUN apt-get update && apt-get install -y \
-    python3 python3-pip build-essential \
-    && apt-get clean
+    curl \
+    python3 \
+    python3-pip \
+    build-essential \
+    # cmake \
+    g++ \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# # Server 빌드 단계
-# FROM base AS server
-# WORKDIR /app/server
-# COPY ./server ./
-# RUN npm install
+# Node.js 설치 (예: 20.x 버전)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && node -v && npm -v
 
-# # Client 빌드 단계
-# FROM base AS client
-# WORKDIR /app/client
-# COPY ./client ./
-# RUN npm install
+FROM base AS build
+RUN npm install -g npm

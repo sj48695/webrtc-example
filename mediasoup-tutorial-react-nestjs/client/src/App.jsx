@@ -3,7 +3,8 @@ import io from 'socket.io-client';
 import * as mediasoupClient from 'mediasoup-client';
 
 // const SERVER_URL = "http://192.168.35.25:5001";
-const SERVER_URL = 'https://13ca-14-52-64-29.ngrok-free.app';
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+console.log('SERVER_URL', SERVER_URL)
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -17,7 +18,7 @@ function App() {
   const [videoProducer, setVideoProducer] = useState(null);
   const [audioProducer, setAudioProducer] = useState(null);
   const [screenProducer, setScreenProducer] = useState(null);
-  const [isRecording, setIsRecording] = useState(false);
+  // const [isRecording, setIsRecording] = useState(false);
   const localVideoRef = useRef(null);
   const deviceRef = useRef(null);
   const recvTransportRef = useRef(null);
@@ -30,7 +31,7 @@ function App() {
     });
 
     newSocket.on('new-room', () => {
-      startRecording();
+      // startRecording();
     });
 
     newSocket.on('new-peer', ({ peerId }) => {
@@ -156,7 +157,7 @@ function App() {
           );
 
           // 수신용 Transport 생성
-          const newRecvTransport = createRecvTransport(
+          createRecvTransport(
             newDevice,
             recvTransportOptions
           );
@@ -180,6 +181,10 @@ function App() {
           }
 
           setJoined(true);
+
+          // if (peers.length < 1) {
+          //   startRecording();
+          // }
         }
       );
     }
@@ -196,8 +201,8 @@ function App() {
       // 로컬 상태 초기화
       setJoined(false);
       setPeers([]);
-      // 🎯 방을 떠난 후 녹음 종료 요청
-      stopRecording();
+      // // 🎯 방을 떠난 후 녹음 종료 요청
+      // stopRecording();
       // 리소스 정리
       if (localStream) {
         localStream.getTracks().forEach((track) => track.stop());
@@ -281,31 +286,31 @@ function App() {
     }
   };
 
-  const startRecording = () => {
-    socket.emit(
-      'start-recording',
-      { roomId, peerId: socket.id },
-      (response) => {
-        if (response.message) {
-          console.log(response.message);
-          setIsRecording(true);
-        }
-      }
-    );
-  };
+  // const startRecording = () => {
+  //   socket.emit(
+  //     'start-recording',
+  //     { roomId, peerId: socket.id },
+  //     (response) => {
+  //       if (response.message) {
+  //         console.log(response.message);
+  //         setIsRecording(true);
+  //       }
+  //     }
+  //   );
+  // };
 
-  const stopRecording = () => {
-    socket.emit(
-      'stop-recording',
-      { roomId },
-      (response) => {
-        if (response.message) {
-          console.log(response.message);
-          setIsRecording(false);
-        }
-      }
-    );
-  };
+  // const stopRecording = () => {
+  //   socket.emit(
+  //     'stop-recording',
+  //     { roomId },
+  //     (response) => {
+  //       if (response.message) {
+  //         console.log(response.message);
+  //         setIsRecording(false);
+  //       }
+  //     }
+  //   );
+  // };
 
   const handleNewProducer = async ({ producerId, peerId, kind }) => {
     console.log('consume New producer:', producerId, peerId, kind);
@@ -399,9 +404,9 @@ function App() {
           <button onClick={screenProducer ? stopScreenShare : startScreenShare}>
             {screenProducer ? 'Stop Screen Share' : 'Start Screen Share'}
           </button>
-          <button onClick={isRecording ? stopRecording : startRecording}>
+          {/* <button onClick={isRecording ? stopRecording : startRecording}>
             {isRecording ? 'Stop Recording' : 'Start Recording'}
-          </button>
+          </button> */}
         </div>
       )}
       <div>

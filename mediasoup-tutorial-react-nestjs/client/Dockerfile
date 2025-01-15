@@ -1,5 +1,5 @@
 # Client 빌드 단계
-FROM base AS client
+FROM mediasoup-base:node-20-ubuntu-22 AS client
 WORKDIR /app/client
 COPY . .
 RUN npm install

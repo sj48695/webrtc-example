@@ -1,37 +1,36 @@
 services:
-  base:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: base:latest
-  nestjs:
-    depends_on:
-      - base
+  server:
     restart: always
-    # image: base:latest
     build:
       context: ./server
       dockerfile: Dockerfile
     environment:
       - DOMAIN=http://host.docker.internal
-      - CORS_ORIGIN_LIST=http://host.docker.internal:3001
+      - CORS_ORIGIN_LIST=http://host.docker.internal:3002,https://192.168.35.25:3002
     env_file:
       - ./server/.env
     ports:
       - "5001:5001"
     volumes:
       - ./server:/app/server
+      - /app/server/node_modules
     # entrypoint: /app/server/entrypoint.sh
   client:
-    depends_on:
-      - base
     restart: always
-    # image: base:latest
     build:
       context: ./client
       dockerfile: Dockerfile
+    env_file:
+      - ./client/.env
+    environment:
+      # - REACT_APP_SERVER_URL=http://host.docker.internal:5001
+      - HOST=0.0.0.0
+      - HTTPS=true
+      - SSL_CRT_FILE=./.cert/cert.crt
+      - SSL_KEY_FILE=./.cert/cert.key
     ports:
-      - "3001:3001"
+      - "3002:3002"
     volumes:
       - ./client:/app/client
+      - /app/client/node_modules
     # entrypoint: /app/client/entrypoint.sh
