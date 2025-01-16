@@ -1,9 +1,11 @@
 services:
   server:
     restart: always
+    tty: "true"
     build:
       context: ./server
       dockerfile: Dockerfile
+    platform: linux/amd64
     environment:
       - DOMAIN=http://host.docker.internal
       - CORS_ORIGIN_LIST=http://host.docker.internal:3002,https://192.168.35.25:3002
@@ -11,6 +13,7 @@ services:
       - ./server/.env
     ports:
       - "5001:5001"
+      - "2000-2020:2000-2020/udp"
     volumes:
       - ./server:/app/server
       - /app/server/node_modules
