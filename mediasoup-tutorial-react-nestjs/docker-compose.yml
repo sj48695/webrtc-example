@@ -5,7 +5,7 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    platform: linux/amd64
+    # platform: linux/amd64
     environment:
       - DOMAIN=http://host.docker.internal
       - CORS_ORIGIN_LIST=http://host.docker.internal:3002,https://192.168.35.25:3002
@@ -13,11 +13,10 @@ services:
       - ./server/.env
     ports:
       - "5001:5001"
-      - "2000-2020:2000-2020/udp"
+      # - "2000-2020:2000-2020/udp"
     volumes:
       - ./server:/app/server
-      - /app/server/node_modules
-    # entrypoint: /app/server/entrypoint.sh
+      - server_node_modules:/app/server/node_modules
   client:
     restart: always
     build:
@@ -25,15 +24,17 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./client/.env
-    environment:
-      # - REACT_APP_SERVER_URL=http://host.docker.internal:5001
-      - HOST=0.0.0.0
-      - HTTPS=true
-      - SSL_CRT_FILE=./.cert/cert.crt
-      - SSL_KEY_FILE=./.cert/cert.key
+    # environment:
+    #   # - REACT_APP_SERVER_URL=http://host.docker.internal:5001
+    #   - HOST=0.0.0.0
+    #   - HTTPS=true
+    #   - SSL_CRT_FILE=./.cert/cert.crt
+    #   - SSL_KEY_FILE=./.cert/cert.key
     ports:
       - "3002:3002"
     volumes:
       - ./client:/app/client
-      - /app/client/node_modules
-    # entrypoint: /app/client/entrypoint.sh
+      - client_node_modules:/app/client/node_modules
+volumes:
+  server_node_modules:
+  client_node_modules:

@@ -14,6 +14,6 @@ RUN apt-get update && apt-get install -y \
 RUN npm install
 
 EXPOSE 5001
-EXPOSE 2000-2020/udp
+# EXPOSE 2000-2020/udp
 
-# CMD [ "npm", "run", "start:dev" ]
+CMD [ "npm", "run", "start:dev" ]
