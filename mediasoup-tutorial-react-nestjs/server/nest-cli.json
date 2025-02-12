@@ -6,9 +6,14 @@
     "deleteOutDir": true,
     "assets": [
       {
+        "include": "**/*.pem",
+        "outDir": "dist"
+      },
+      {
         "include": "**/*.sdp",
         "outDir": "dist"
       }
-    ]
+    ],
+    "watchAssets": true
   }
 }

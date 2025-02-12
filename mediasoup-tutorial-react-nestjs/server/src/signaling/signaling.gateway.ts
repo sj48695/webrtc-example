@@ -22,7 +22,7 @@ import { JoinChannelDto } from './dto/join-channel.dto';
 @WebSocketGateway({
   cors: true,
   // cors: {
-  //   origin: 'https://192.168.35.25:3002',
+  //   origin: 'https://192.168.35.25:3001',
   //   credentials: true,
   // },
 })

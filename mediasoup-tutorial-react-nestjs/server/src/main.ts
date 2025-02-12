@@ -103,13 +103,13 @@ class Application {
 }
 
 async function init(): Promise<void> {
-  // const httpsOptions = {
-  //   key: fs.readFileSync(path.resolve(__dirname, '../.cert/key.pem')),
-  //   cert: fs.readFileSync(path.resolve(__dirname, '../.cert/cert.pem')),
-  // };
+  const httpsOptions = {
+    key: fs.readFileSync(path.resolve(__dirname, process.env.SSL_KEY_FILE)),
+    cert: fs.readFileSync(path.resolve(__dirname, process.env.SSL_CRT_FILE)),
+  };
   const server = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: winstonLogger,
-    // httpsOptions,
+    httpsOptions,
   });
   const app = new Application(server);
   await app.bootstrap();

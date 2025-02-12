@@ -2,9 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import * as mediasoupClient from 'mediasoup-client';
 
-// const SERVER_URL = "http://192.168.35.25:5001";
-const SERVER_URL = process.env.REACT_APP_SERVER_URL;
-console.log('SERVER_URL', SERVER_URL)
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:5001';
+console.log('SERVER_URL', SERVER_URL);
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -94,6 +93,9 @@ function App() {
         }
       }
     );
+    newSendTransport.on('connectionstatechange', (state) => {
+      console.log('Send transport state changed:', state);
+    });
     setSendTransport(newSendTransport);
     return newSendTransport;
   };
@@ -112,6 +114,9 @@ function App() {
       } catch (error) {
         errback(error);
       }
+    });
+    newRecvTransport.on('connectionstatechange', (state) => {
+      console.log('Receive transport state changed:', state);
     });
     setRecvTransport(newRecvTransport);
     recvTransportRef.current = newRecvTransport;
@@ -157,10 +162,7 @@ function App() {
           );
 
           // 수신용 Transport 생성
-          createRecvTransport(
-            newDevice,
-            recvTransportOptions
-          );
+          createRecvTransport(newDevice, recvTransportOptions);
 
           socket.on('new-producer', handleNewProducer);
 
