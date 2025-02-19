@@ -34,7 +34,7 @@ class Application {
       : ['*'];
     this.ADMIN_USER = process.env.ADMIN_USER || 'username';
     this.ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '1234';
-    this.Domain = process.env.DOMAIN || 'http://192.168.35.25';
+    this.Domain = process.env.DOMAIN || 'https://localhost';
   }
 
   // docs secure

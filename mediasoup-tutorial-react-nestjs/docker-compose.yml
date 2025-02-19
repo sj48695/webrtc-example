@@ -10,7 +10,8 @@ services:
       - ./server/.env
     ports:
       - "5001:5001"
-      # - "2000-2020:2000-2020/udp"
+      - "2000-2020:2000-2020"
+      - "2000-2020:2000-2020/udp"
     volumes:
       - ./server:/app/server
       - server_node_modules:/app/server/node_modules
